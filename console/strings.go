@@ -13,7 +13,7 @@ import (
 )
 
 // LaunchingDialog - функция для выполнения последовательности диалога
-func LaunchingDialog(brainBot *brain.FeedForward, syncGroup *sync.WaitGroup) {
+func LaunchingDialog(brainBot *brain.NeuralNetwork, syncGroup *sync.WaitGroup) {
 
 	// отложенное завершение потока
 	defer syncGroup.Done()
