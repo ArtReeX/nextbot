@@ -20,10 +20,10 @@ func ExampleNeuralNetwork() {
 	}
 
 	// создание экземпляра передачи
-	brain := NeuralNetwork{}
+	network := NeuralNetwork{}
 
 	// инициализация нейронной сети, структура сети будет содержать 2 входа, 2 скрытых узла и 1 выход
-	brain.Initialize(2, 2, 1)
+	network.Initialize(2, 2, 1)
 
 	/*
 		Обучение сети с использованием шаблона XOR:
@@ -32,14 +32,14 @@ func ExampleNeuralNetwork() {
 		скорость обучения установлена равной 0.6, а коэффициент импульса - 0.4,
 		последний параметр отвечает за получение отчётов об ошибках при обучении.
 	*/
-	brain.Train(patterns, 1000, 0.6, 0.4, false)
+	network.Train(patterns, 1000, 0.6, 0.4, false)
 
 	// тестирование обученной сети
-	brain.Test(patterns)
+	network.Test(patterns)
 
 	// ручное тестирование
 	inputs := []float64{1, 1}
-	fmt.Println(brain.Update(inputs))
+	fmt.Println(network.Update(inputs))
 
 	// Output:
 	// [0 0] -> [0.057503945708445206]  :  [0]
@@ -49,7 +49,7 @@ func ExampleNeuralNetwork() {
 	// [0.09740879532462123]
 }
 
-// TestLoadAndSave - функция обеспечивает тесторование сохранения текущего состояния сети и последующую загрузку в нейронную сеть
+// TestLoadAndSave - функция обеспечивает тестирование сохранения текущего состояния сети и последующую загрузку в нейронную сеть
 func TestLoadAndSave(t *testing.T) {
 	// установка случайности в нулевое значение
 	rand.Seed(0)
@@ -63,10 +63,10 @@ func TestLoadAndSave(t *testing.T) {
 	}
 
 	// создание первого экземпляра передачи
-	brainOne := NeuralNetwork{}
+	networkOne := NeuralNetwork{}
 
 	// инициализация нейронной сети, структура сети будет содержать 2 входа, 2 скрытых узла и 1 выход
-	brainOne.Initialize(2, 2, 1)
+	networkOne.Initialize(2, 2, 1)
 
 	/*
 		Обучение сети с использованием шаблона XOR:
@@ -75,25 +75,75 @@ func TestLoadAndSave(t *testing.T) {
 		скорость обучения установлена равной 0.6, а коэффициент импульса - 0.4,
 		последний параметр отвечает за получение отчётов об ошибках при обучении.
 	*/
-	brainOne.Train(patterns, 1000, 0.6, 0.4, false)
+	networkOne.Train(patterns, 1000, 0.6, 0.4, false)
 
 	// получение снимка нейронной сети
-	dump, error := brainOne.Save()
+	dump, error := networkOne.Save()
 	if error != nil {
 		t.Error(error)
 	}
 
 	// создание второго экземпляра передачи
-	brainTwo := NeuralNetwork{}
+	networkTwo := NeuralNetwork{}
 
 	// загрузка снимка в нейронную сеть
-	error = brainTwo.Load(dump)
+	error = networkTwo.Load(dump)
 	if error != nil {
 		t.Error(error)
 	}
 
 	// проверка на различия в сетях
-	if !reflect.DeepEqual(brainOne, brainTwo) {
+	if !reflect.DeepEqual(networkOne, networkTwo) {
 		t.Error("Error: Network was not loaded correctly.")
+	}
+}
+
+// TestUpdate - функция обеспечивает тестирование добавление записи в нейронную сеть во время работы
+func TestUpdate(t *testing.T) {
+	// установка случайности в нулевое значение
+	rand.Seed(0)
+
+	// создание шаблона XOR для обучения сети
+	patterns := [][][]float64{
+		{{0, 0}, {0}},
+		{{0, 1}, {1}},
+		{{1, 0}, {1}},
+		{{1, 1}, {0}},
+	}
+
+	// создание первого экземпляра передачи
+	network := NeuralNetwork{}
+
+	// инициализация нейронной сети, структура сети будет содержать 2 входа, 2 скрытых узла и 1 выход
+	network.Initialize(2, 2, 1)
+
+	/*
+		Обучение сети с использованием шаблона XOR:
+
+		Тренировка будет проходить 1000 итераций,
+		скорость обучения установлена равной 0.6, а коэффициент импульса - 0.4,
+		последний параметр отвечает за получение отчётов об ошибках при обучении.
+	*/
+	network.Train(patterns, 1000, 0.6, 0.4, false)
+
+	// получение снимка нейронной сети до нового варианта
+	dumpOne, error := network.Save()
+	if error != nil {
+		t.Error(error)
+	}
+
+	// ручное тестирование
+	inputs := []float64{1, 1}
+	network.Update(inputs)
+
+	// получение снимка нейронной сети после нового варианта
+	dumpTwo, error := network.Save()
+	if error != nil {
+		t.Error(error)
+	}
+
+	// проверка на различия в сетях
+	if reflect.DeepEqual(dumpOne, dumpTwo) {
+		t.Error("Error: The network does not learn while working.")
 	}
 }

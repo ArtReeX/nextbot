@@ -30,9 +30,6 @@ func Initialize() *brain.NeuralNetwork {
 	// обучение сети
 	brainBot.Train(patterns, 1000, 0.6, 0.4, false)
 
-	dumb, _ := brainBot.Save()
-	fmt.Println(dumb)
-
 	// тестирование обученной сети
 	fmt.Println(brainBot.Update([]float64{1, 1}))
 
