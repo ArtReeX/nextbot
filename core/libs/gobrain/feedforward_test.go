@@ -1,4 +1,4 @@
-package gobrain
+package brain
 
 import (
 	"math/rand"
