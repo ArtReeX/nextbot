@@ -7,8 +7,8 @@ import (
 	"math"
 )
 
-// FeedForward - структура нейронной сети
-type FeedForward struct {
+// NeuralNetwork - структура нейронной сети
+type NeuralNetwork struct {
 	// количество входящих, скрытых и исходыщих узлов
 	NInputs, NHiddens, NOutputs int
 	// параметр регрессии
@@ -24,14 +24,14 @@ type FeedForward struct {
 }
 
 /*
-Init - функция для инициализации нейронной сети.
+Initialize - функция для инициализации нейронной сети.
 
 Параметры:
 «inputs» - это количество входов, которое будет иметь нейронная сеть,
 «hiddens» - это количество скрытых узлов,
 «outputs» - это количество выходов нейронной сети.
 */
-func (nn *FeedForward) Init(inputs, hiddens, outputs int) {
+func (nn *NeuralNetwork) Initialize(inputs, hiddens, outputs int) {
 	nn.NInputs = inputs + 1   // +1 для смещения
 	nn.NHiddens = hiddens + 1 // +1 для смещения
 	nn.NOutputs = outputs
@@ -59,8 +59,8 @@ func (nn *FeedForward) Init(inputs, hiddens, outputs int) {
 	nn.OutputChanges = matrix(nn.NHiddens, nn.NOutputs)
 }
 
-// Serialize - функция позволяет сохранить текущее состояние нейронной сети
-func (nn *FeedForward) Serialize() ([]byte, error) {
+// Save - функция позволяет сохранить текущее состояние нейронной сети
+func (nn *NeuralNetwork) Save() ([]byte, error) {
 
 	data, err := json.Marshal(nn)
 	if err != nil {
@@ -71,7 +71,7 @@ func (nn *FeedForward) Serialize() ([]byte, error) {
 }
 
 // Load - функция позволяет загрузить состояние сети в нейронную сеть
-func (nn *FeedForward) Load(data []byte) error {
+func (nn *NeuralNetwork) Load(data []byte) error {
 
 	err := json.Unmarshal(data, nn)
 	if err != nil {
@@ -92,7 +92,7 @@ SetContexts - функция, которая задаёт количество �
 
 При использовании «initValues» обратите внимание, что контексты должны иметь одинаковый размер скрытых узлов + 1 (узел смещения).
 */
-func (nn *FeedForward) SetContexts(nContexts int, initValues [][]float64) {
+func (nn *NeuralNetwork) SetContexts(nContexts int, initValues [][]float64) {
 	if initValues == nil {
 		initValues = make([][]float64, nContexts)
 
@@ -108,7 +108,7 @@ func (nn *FeedForward) SetContexts(nContexts int, initValues [][]float64) {
 Update - функция используется для активации нейронной сети.
 Учитывая массив входов, он возвращает массив, эквивалентный количеству выходов, со значениями от 0 до 1.
 */
-func (nn *FeedForward) Update(inputs []float64) []float64 {
+func (nn *NeuralNetwork) Update(inputs []float64) []float64 {
 	if len(inputs) != nn.NInputs-1 {
 		log.Fatal("Error: wrong number of inputs")
 	}
@@ -155,9 +155,9 @@ func (nn *FeedForward) Update(inputs []float64) []float64 {
 }
 
 // BackPropagate - функция используется при обучении нейронной сети, для обратной передачи ошибок из сетевой активации.
-func (nn *FeedForward) BackPropagate(targets []float64, lRate, mFactor float64) float64 {
+func (nn *NeuralNetwork) BackPropagate(targets []float64, lRate, mFactor float64) float64 {
 	if len(targets) != nn.NOutputs {
-		log.Fatal("Error: wrong number of target values")
+		log.Fatal("Error: wrong number of target values.")
 	}
 
 	outputDeltas := vector(nn.NOutputs, 0.0)
@@ -202,7 +202,7 @@ func (nn *FeedForward) BackPropagate(targets []float64, lRate, mFactor float64) 
 }
 
 // Train - функция используется для обучения нейронной сети, запуская тренировочную операцию N раз и возвращает вычисленные ошибки при обучении.
-func (nn *FeedForward) Train(patterns [][][]float64, iterations int, lRate, mFactor float64, debug bool) []float64 {
+func (nn *NeuralNetwork) Train(patterns [][][]float64, iterations int, lRate, mFactor float64, debug bool) []float64 {
 	errors := make([]float64, iterations)
 
 	for i := 0; i < iterations; i++ {
@@ -225,7 +225,7 @@ func (nn *FeedForward) Train(patterns [][][]float64, iterations int, lRate, mFac
 }
 
 // Test - функция тестирования
-func (nn *FeedForward) Test(patterns [][][]float64) {
+func (nn *NeuralNetwork) Test(patterns [][][]float64) {
 	for _, p := range patterns {
 		fmt.Println(p[0], "->", nn.Update(p[0]), " : ", p[1])
 	}

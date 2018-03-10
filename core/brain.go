@@ -8,7 +8,7 @@ import (
 )
 
 // Initialize - функция, производящая инициализацию нейронной сети
-func Initialize() *brain.FeedForward {
+func Initialize() *brain.NeuralNetwork {
 
 	// установка случайности в нулевое значение
 	rand.Seed(0)
@@ -22,10 +22,10 @@ func Initialize() *brain.FeedForward {
 	}
 
 	// создание экземпляра передачи
-	brainBot := brain.FeedForward{}
+	brainBot := brain.NeuralNetwork{}
 
 	// инициализация нейронной сети, структура сети будет содержать 2 входа, 2 скрытых узла и 1 выход
-	brainBot.Init(2, 2, 1)
+	brainBot.Initialize(2, 2, 1)
 
 	// обучение сети
 	brainBot.Train(patterns, 1000, 0.6, 0.4, false)
