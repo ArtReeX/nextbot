@@ -31,8 +31,8 @@ Init - функция для инициализации нейронной се�
 «outputs» - это количество выходов нейронной сети.
 */
 func (nn *FeedForward) Init(inputs, hiddens, outputs int) {
-	nn.NInputs = inputs + 1   // +1 for bias
-	nn.NHiddens = hiddens + 1 // +1 for bias
+	nn.NInputs = inputs + 1   // +1 для смещения
+	nn.NHiddens = hiddens + 1 // +1 для смещения
 	nn.NOutputs = outputs
 
 	nn.InputActivations = vector(nn.NInputs, 1.0)
