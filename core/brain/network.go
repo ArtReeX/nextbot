@@ -1,6 +1,7 @@
 package brain
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"math"
@@ -56,6 +57,28 @@ func (nn *FeedForward) Init(inputs, hiddens, outputs int) {
 
 	nn.InputChanges = matrix(nn.NInputs, nn.NHiddens)
 	nn.OutputChanges = matrix(nn.NHiddens, nn.NOutputs)
+}
+
+// Serialize - функция позволяет сохранить текущее состояние нейронной сети
+func (nn *FeedForward) Serialize() ([]byte, error) {
+
+	data, err := json.Marshal(nn)
+	if err != nil {
+		return make([]byte, 0), err
+	}
+
+	return data, err
+}
+
+// Load - функция позволяет загрузить состояние сети в нейронную сеть
+func (nn *FeedForward) Load(data []byte) error {
+
+	err := json.Unmarshal(data, nn)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 /*
