@@ -1,6 +1,7 @@
 package brain
 
 import (
+	"fmt"
 	"math/rand"
 )
 
@@ -37,11 +38,12 @@ func ExampleFeedForward() {
 
 	// ручное тестирование
 	inputs := []float64{1, 1}
-	ff.Update(inputs)
+	fmt.Println(ff.Update(inputs))
 
 	// Output:
 	// [0 0] -> [0.057503945708445206]  :  [0]
 	// [0 1] -> [0.9301006350712101]  :  [1]
 	// [1 0] -> [0.9278099662272838]  :  [1]
 	// [1 1] -> [0.09740879532462123]  :  [0]
+	// [0.09740879532462123]
 }
