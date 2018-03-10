@@ -1,4 +1,3 @@
-// Package gobrain provides basic neural networks algorithms.
 package gobrain
 
 import (
@@ -7,30 +6,29 @@ import (
 	"math"
 )
 
-// FeedForward struct is used to represent a simple neural network
+// FeedForward - структура нейронной сети
 type FeedForward struct {
-	// Number of input, hidden and output nodes
+	// количество входящих, скрытых и исходыщих узлов
 	NInputs, NHiddens, NOutputs int
-	// Whether it is regression or not
+	// параметр регрессии
 	Regression bool
-	// Activations for nodes
+	// активации узлов
 	InputActivations, HiddenActivations, OutputActivations []float64
-	// ElmanRNN contexts
+	// ElmanRNN-контексты
 	Contexts [][]float64
-	// Weights
+	// веса
 	InputWeights, OutputWeights [][]float64
-	// Last change in weights for momentum
+	// последнее изменение весов для импульса
 	InputChanges, OutputChanges [][]float64
 }
 
 /*
-Init :
+Init - функция для инициализации нейронной сети.
 
-Initialize the neural network;
-
-the 'inputs' value is the number of inputs the network will have,
-the 'hiddens' value is the number of hidden nodes and
-the 'outputs' value is the number of the outputs of the network.
+Параметры:
+«inputs» - это количество входов, которое будет иметь нейронная сеть,
+«hiddens» - это количество скрытых узлов,
+«outputs» - это количество выходов нейронной сети.
 */
 func (nn *FeedForward) Init(inputs, hiddens, outputs int) {
 	nn.NInputs = inputs + 1   // +1 for bias
@@ -61,20 +59,16 @@ func (nn *FeedForward) Init(inputs, hiddens, outputs int) {
 }
 
 /*
-SetContexts :
+SetContexts - функция, которая задаёт количество контекстов для добавления в сеть.
 
-Set the number of contexts to add to the network.
+По умолчанию в нейронной сети нет контекста, поэтому это простая сеть для прямой передачи, при добавлении контекстов сеть ведет себя как SRN Elman (Simple Recurrent Network).
 
-By default the network do not have any context so it is a simple Feed Forward network,
-when contexts are added the network behaves like an Elman's SRN (Simple Recurrent Network).
+Первый параметр (nContexts) используется для указания количества используемых контекстов,
+второй параметр (initValues) может использоваться для создания настраиваемых инициализированных контекстов.
 
-The first parameter (nContexts) is used to indicate the number of contexts to be used,
-the second parameter (initValues) can be used to create custom initialized contexts.
+Если установлено значение «initValues», первый параметр «nContexts» игнорируется и используются контексты, предусмотренные в «initValues».
 
-If 'initValues' is set, the first parameter 'nContexts' is ignored and
-the contexts provided in 'initValues' are used.
-
-When using 'initValues' note that contexts must have the same size of hidden nodes + 1 (bias node).
+При использовании «initValues» обратите внимание, что контексты должны иметь одинаковый размер скрытых узлов + 1 (узел смещения).
 */
 func (nn *FeedForward) SetContexts(nContexts int, initValues [][]float64) {
 	if initValues == nil {
@@ -89,11 +83,8 @@ func (nn *FeedForward) SetContexts(nContexts int, initValues [][]float64) {
 }
 
 /*
-Update :
-
-The Update method is used to activate the Neural Network.
-
-Given an array of inputs, it returns an array, of length equivalent of number of outputs, with values ranging from 0 to 1.
+Update - функция используется для активации нейронной сети.
+Учитывая массив входов, он возвращает массив, эквивалентный количеству выходов, со значениями от 0 до 1.
 */
 func (nn *FeedForward) Update(inputs []float64) []float64 {
 	if len(inputs) != nn.NInputs-1 {
@@ -141,12 +132,7 @@ func (nn *FeedForward) Update(inputs []float64) []float64 {
 	return nn.OutputActivations
 }
 
-/*
-BackPropagate :
-
-The BackPropagate method is used, when training the Neural Network,
-to back propagate the errors from network activation.
-*/
+// BackPropagate - функция используется при обучении нейронной сети, для обратной передачи ошибок из сетевой активации.
 func (nn *FeedForward) BackPropagate(targets []float64, lRate, mFactor float64) float64 {
 	if len(targets) != nn.NOutputs {
 		log.Fatal("Error: wrong number of target values")
@@ -193,12 +179,7 @@ func (nn *FeedForward) BackPropagate(targets []float64, lRate, mFactor float64) 
 	return e
 }
 
-/*
-Train :
-
-This method is used to train the Network, it will run the training operation for 'iterations' times
-and return the computed errors when training.
-*/
+// Train - функция используется для обучения нейронной сети, запуская тренировочную операцию N раз и возвращает вычисленные ошибки при обучении.
 func (nn *FeedForward) Train(patterns [][][]float64, iterations int, lRate, mFactor float64, debug bool) []float64 {
 	errors := make([]float64, iterations)
 
@@ -221,11 +202,7 @@ func (nn *FeedForward) Train(patterns [][][]float64, iterations int, lRate, mFac
 	return errors
 }
 
-/*
-Test :
-
-Testing.
-*/
+// Test - функция тестирования
 func (nn *FeedForward) Test(patterns [][][]float64) {
 	for _, p := range patterns {
 		fmt.Println(p[0], "->", nn.Update(p[0]), " : ", p[1])
