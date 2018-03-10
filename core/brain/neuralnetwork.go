@@ -110,7 +110,7 @@ Update - функция используется для активации не�
 */
 func (nn *NeuralNetwork) Update(inputs []float64) []float64 {
 	if len(inputs) != nn.NInputs-1 {
-		log.Fatal("Error: wrong number of inputs")
+		log.Fatal("Error: wrong number of inputs.")
 	}
 
 	for i := 0; i < nn.NInputs-1; i++ {

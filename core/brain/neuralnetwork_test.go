@@ -94,7 +94,7 @@ func TestLoadAndSave(t *testing.T) {
 
 	// проверка на различия в сетях
 	if !reflect.DeepEqual(networkOne, networkTwo) {
-		t.Error("Error: Network was not loaded correctly.")
+		t.Error("Error: network was not loaded correctly.")
 	}
 }
 
@@ -144,6 +144,6 @@ func TestUpdate(t *testing.T) {
 
 	// проверка на различия в сетях
 	if reflect.DeepEqual(dumpOne, dumpTwo) {
-		t.Error("Error: The network does not learn while working.")
+		t.Error("Error: the network does not learn while working.")
 	}
 }
