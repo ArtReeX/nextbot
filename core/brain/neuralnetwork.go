@@ -11,8 +11,6 @@ import (
 type NeuralNetwork struct {
 	// количество входящих, скрытых и исходыщих узлов
 	NInputs, NHiddens, NOutputs int
-	// параметр регрессии
-	Regression bool
 	// активации узлов
 	InputActivations, HiddenActivations, OutputActivations []float64
 	// ElmanRNN-контексты
