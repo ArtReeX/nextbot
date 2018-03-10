@@ -5,10 +5,11 @@ import (
 )
 
 func ExampleFeedForward() {
-	// set the random seed to 0
+
+	// установка случайности в нулевое значение
 	rand.Seed(0)
 
-	// create the XOR representation patter to train the network
+	// создание шаблона XOR для обучения сети
 	patterns := [][][]float64{
 		{{0, 0}, {0}},
 		{{0, 1}, {1}},
@@ -16,24 +17,25 @@ func ExampleFeedForward() {
 		{{1, 1}, {0}},
 	}
 
-	// instantiate the Feed Forward
+	// создание экземпляра передачи
 	ff := &FeedForward{}
 
-	// initialize the Neural Network;
-	// the networks structure will contain:
-	// 2 inputs, 2 hidden nodes and 1 output.
+	// инициализация нейронной сети, структура сети будет содержать 2 входа, 2 скрытых узла и 1 выход
 	ff.Init(2, 2, 1)
 
-	// train the network using the XOR patterns
-	// the training will run for 1000 epochs
-	// the learning rate is set to 0.6 and the momentum factor to 0.4
-	// use true in the last parameter to receive reports about the learning error
+	/*
+		Обучение сети с использованием шаблона XOR:
+
+		тренировка будет проходить 1000 итераций,
+		скорость обучения установлена равной 0,6, а коэффициент импульса - 0,4,
+		последний параметр отвечает за получение отчётов об ошибках
+	*/
 	ff.Train(patterns, 1000, 0.6, 0.4, false)
 
-	// testing the network
+	// тестирование обученной сети
 	ff.Test(patterns)
 
-	// predicting a value
+	// ручное тестирование
 	inputs := []float64{1, 1}
 	ff.Update(inputs)
 
