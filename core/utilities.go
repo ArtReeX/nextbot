@@ -3,7 +3,6 @@ package core
 import (
 	"log"
 	"regexp"
-	"strings"
 )
 
 // FilterTheQuestion - функция, предназначенная для очистки входящего запроса от лишних символов
@@ -13,7 +12,6 @@ func FilterTheQuestion(question string) string {
 		log.Fatal(error)
 	}
 	question = reg.ReplaceAllString(question, "")
-	question = strings.ToUpper(question)
 
 	return question
 }

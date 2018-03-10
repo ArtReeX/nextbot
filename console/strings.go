@@ -9,10 +9,11 @@ import (
 	"time"
 
 	"../core"
+	"../core/brain"
 )
 
 // LaunchingDialog - функция для выполнения последовательности диалога
-func LaunchingDialog(syncGroup *sync.WaitGroup) {
+func LaunchingDialog(brainBot *brain.FeedForward, syncGroup *sync.WaitGroup) {
 
 	// отложенное завершение потока
 	defer syncGroup.Done()
@@ -35,7 +36,7 @@ func LaunchingDialog(syncGroup *sync.WaitGroup) {
 		switch core.Commands(question) {
 		default:
 			fmt.Print("BOT: ")
-			fmt.Println(core.Input(question))
+			fmt.Println(core.Input(question, brainBot))
 		case 0:
 			return
 		}

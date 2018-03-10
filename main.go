@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"./console"
+	"./core"
 )
 
 // main - функция, являющейся основной
@@ -15,12 +16,15 @@ func main() {
 	// показ информационного сообщения
 	console.ShowInfo()
 
+	// инициализация нейронной сети
+	brainBot := core.Initialize()
+
 	// опредение группы контролируемых потоков
 	syncGroup := new(sync.WaitGroup)
 
 	// запуск потока диалога
 	syncGroup.Add(1)
-	go console.LaunchingDialog(syncGroup)
+	go console.LaunchingDialog(brainBot, syncGroup)
 
 	// перевод в режим ожидания окончания всех потоков
 	syncGroup.Wait()
