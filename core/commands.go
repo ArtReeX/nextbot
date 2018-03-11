@@ -1,14 +1,12 @@
 package core
 
 // Commands - функция, предназначенная для анализа строки на наличие команд
-func Commands(question string) int {
+func Commands(question string, events chan<- string) {
 
-	switch FilterTheQuestion(question) {
+	switch question {
 
 	case "!bye":
-		return 0
-	default:
-		return -1
+		events <- "exit"
 
 	}
 

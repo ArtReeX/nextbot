@@ -17,26 +17,59 @@ func main() {
 	// показ информационного сообщения
 	console.ShowInfo()
 
-	// инициализация нейронной сети
-	network := core.Initialize()
+	// инициализация канала уведомлений
+	events := make(chan string)
 
 	// опредение группы контролируемых потоков
 	syncGroup := new(sync.WaitGroup)
 
-	// запуск потока диалога
+	// запуск потока уведомлений от нейронной сети
 	syncGroup.Add(1)
-	go console.LaunchingDialog(network, syncGroup)
+	go LaunchingEventsScanner(events, syncGroup)
+
+	// инициализация нейронной сети
+	network := core.Initialize(events)
+
+	// запуск потока диалога
+	go console.LaunchingDialog(network, events)
 
 	// перевод в режим ожидания окончания всех потоков
 	syncGroup.Wait()
 
-	// показ прощания
-	console.ShowFarewell()
-
 	// завершение сеанса нейронной сети
 	core.Сompletion(network)
 
+	// показ прощания
+	console.ShowFarewell()
+
 	// остановка перед выходом
-	time.Sleep(time.Second * 2)
+	time.Sleep(time.Second)
+
+}
+
+// LaunchingEventsScanner - функция обеспечивает постоянное сканирование канала событий
+func LaunchingEventsScanner(events <-chan string, syncGroup *sync.WaitGroup) {
+
+	// отложенное завершение потока
+	defer syncGroup.Done()
+
+	for {
+
+		// обработка комманд от нейронной сети
+		switch <-events {
+
+		case "exit":
+			syncGroup.Done()
+		case "begin_train":
+			console.ShowFirstTrainStart()
+		case "end_train":
+			console.ShowFirstTrainEnd()
+
+		}
+
+		// переход в режим ожидания на N секунд
+		time.Sleep(time.Second)
+
+	}
 
 }

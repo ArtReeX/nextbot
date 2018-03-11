@@ -16,7 +16,7 @@ const (
 )
 
 // Initialize - функция производящая инициализацию нейронной сети
-func Initialize() *brain.NeuralNetwork {
+func Initialize(events chan<- string) *brain.NeuralNetwork {
 
 	// создание экземпляра нейронной сети
 	network := brain.NeuralNetwork{}
@@ -25,11 +25,15 @@ func Initialize() *brain.NeuralNetwork {
 	_, error := os.Stat(SnapshotFile)
 	if error != nil {
 
+		events <- "begin_train"
+
 		// первоначальное обучение нейронной сети
 		FirstTrain(&network)
 
 		// сохранение снимка обученной сети в файл
 		Сompletion(&network)
+
+		events <- "end_train"
 
 	} else {
 
@@ -51,7 +55,6 @@ func Initialize() *brain.NeuralNetwork {
 
 	}
 
-	// тест
 	fmt.Println(network.Update([]float64{0, 0}))
 
 	return &network
@@ -61,7 +64,30 @@ func Initialize() *brain.NeuralNetwork {
 // Сompletion - функция предназначенная для завершения сеанса нейронной сети
 func Сompletion(network *brain.NeuralNetwork) {
 
-	// открытие файла для сохранения снимка нейронной сети
+	// проверка наличия файла снимка нейронной сети
+	_, error := os.Stat(SnapshotFile)
+	if error == nil {
+
+		// удаление старого снимка нейронной сети
+		error := os.Remove(SnapshotFile)
+		if error != nil {
+			log.Fatal("Error: you can not delete a file for overwriting neural network snapshots.")
+		}
+
+	} else {
+
+		// создание файла для сохранения снимка нейронной сети
+		file, error := os.Create(SnapshotFile)
+		if error != nil {
+			log.Fatal("Error: it is impossible to create a file for overwriting neural network snapshots.")
+		}
+
+		// закрытие файла
+		file.Close()
+
+	}
+
+	// создание файла для сохранения снимка нейронной сети
 	file, error := os.OpenFile(SnapshotFile, os.O_CREATE|os.O_WRONLY, 0777)
 	if error != nil {
 		log.Fatal("Error: it is not possible to open a file to save a snapshot of the neural network.")

@@ -46,7 +46,37 @@ func ShowFarewell() {
 		 __________________________________________
 		|________________ GOODBYE :-) _____________|
 		|__________________________________________|
-		|___ I'll close the window in 2 seconds ___|
+		|___ I'll close the window in 1 seconds ___|
+		|__________________________________________|
+	`)
+
+	if error != nil {
+		log.Fatal(error)
+	}
+
+}
+
+// ShowFirstTrainStart - функция вывода сообщения о начала первого обучения
+func ShowFirstTrainStart() {
+
+	_, error := fmt.Println(`
+		 __________________________________________
+		|__ Began the first training of the bot. __|
+		|__________________________________________|
+	`)
+
+	if error != nil {
+		log.Fatal(error)
+	}
+
+}
+
+// ShowFirstTrainEnd - функция вывода сообщения об окончании первого обучения
+func ShowFirstTrainEnd() {
+
+	_, error := fmt.Println(`
+		 __________________________________________
+		|_____ Finished the first bot training. ___|
 		|__________________________________________|
 	`)
 
