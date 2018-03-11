@@ -102,8 +102,8 @@ func TestLoadAndSave(t *testing.T) {
 
 }
 
-// TestUpdate - функция обеспечивает тестирование добавление записи в нейронную сеть во время работы
-func TestUpdate(t *testing.T) {
+// TestTrain - функция обеспечивает тестирование добавление записи в нейронную сеть во время работы
+func TestTrain(t *testing.T) {
 
 	// установка случайности в нулевое значение
 	rand.Seed(0)
@@ -137,9 +137,11 @@ func TestUpdate(t *testing.T) {
 		t.Error(error)
 	}
 
-	// ручное тестирование
-	inputs := []float64{1, 1}
-	network.Update(inputs)
+	// дополнительная тренировка
+	patterns = [][][]float64{
+		{{1, 1}, {0}},
+	}
+	network.Train(patterns, 1000, 0.6, 0.4, false)
 
 	// получение снимка нейронной сети после нового варианта
 	dumpTwo, error := network.Save()
