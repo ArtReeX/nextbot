@@ -7,6 +7,7 @@ import (
 
 // ShowGreeting - функция вывода привествия для пользователя
 func ShowGreeting() {
+
 	_, error := fmt.Println(`
 		 __________________________________________
 		|________________ nextBOT _________________|
@@ -19,10 +20,12 @@ func ShowGreeting() {
 	if error != nil {
 		log.Fatal(error)
 	}
+
 }
 
 // ShowInfo - функция вывода прощания для пользователя
 func ShowInfo() {
+
 	_, error := fmt.Println(`
 		 __________________________________________
 		|_________________ INFO: __________________|
@@ -33,10 +36,12 @@ func ShowInfo() {
 	if error != nil {
 		log.Fatal(error)
 	}
+
 }
 
 // ShowFarewell - функция вывода прощания для пользователя
 func ShowFarewell() {
+
 	_, error := fmt.Println(`
 		 __________________________________________
 		|________________ GOODBYE :-) _____________|
@@ -48,4 +53,5 @@ func ShowFarewell() {
 	if error != nil {
 		log.Fatal(error)
 	}
+
 }

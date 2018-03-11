@@ -10,6 +10,7 @@ import (
 
 // main - функция, являющейся основной
 func main() {
+
 	// показ приветствия
 	console.ShowGreeting()
 
@@ -17,14 +18,14 @@ func main() {
 	console.ShowInfo()
 
 	// инициализация нейронной сети
-	brainBot := core.Initialize()
+	network := core.Initialize()
 
 	// опредение группы контролируемых потоков
 	syncGroup := new(sync.WaitGroup)
 
 	// запуск потока диалога
 	syncGroup.Add(1)
-	go console.LaunchingDialog(brainBot, syncGroup)
+	go console.LaunchingDialog(network, syncGroup)
 
 	// перевод в режим ожидания окончания всех потоков
 	syncGroup.Wait()
@@ -32,6 +33,10 @@ func main() {
 	// показ прощания
 	console.ShowFarewell()
 
+	// завершение сеанса нейронной сети
+	core.Сompletion(network)
+
 	// остановка перед выходом
 	time.Sleep(time.Second * 2)
+
 }

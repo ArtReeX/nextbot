@@ -8,6 +8,7 @@ import (
 )
 
 func ExampleNeuralNetwork() {
+
 	// установка случайности в нулевое значение
 	rand.Seed(0)
 
@@ -19,7 +20,7 @@ func ExampleNeuralNetwork() {
 		{{1, 1}, {0}},
 	}
 
-	// создание экземпляра передачи
+	// создание экземпляра нейронной сети
 	network := NeuralNetwork{}
 
 	// инициализация нейронной сети, структура сети будет содержать 2 входа, 2 скрытых узла и 1 выход
@@ -47,10 +48,12 @@ func ExampleNeuralNetwork() {
 	// [1 0] -> [0.9278099662272838]  :  [1]
 	// [1 1] -> [0.09740879532462123]  :  [0]
 	// [0.09740879532462123]
+
 }
 
 // TestLoadAndSave - функция обеспечивает тестирование сохранения текущего состояния сети и последующую загрузку в нейронную сеть
 func TestLoadAndSave(t *testing.T) {
+
 	// установка случайности в нулевое значение
 	rand.Seed(0)
 
@@ -62,7 +65,7 @@ func TestLoadAndSave(t *testing.T) {
 		{{1, 1}, {0}},
 	}
 
-	// создание первого экземпляра передачи
+	// создание первого экземпляра нейронной сети
 	networkOne := NeuralNetwork{}
 
 	// инициализация нейронной сети, структура сети будет содержать 2 входа, 2 скрытых узла и 1 выход
@@ -83,7 +86,7 @@ func TestLoadAndSave(t *testing.T) {
 		t.Error(error)
 	}
 
-	// создание второго экземпляра передачи
+	// создание второго экземпляра нейронной сети
 	networkTwo := NeuralNetwork{}
 
 	// загрузка снимка в нейронную сеть
@@ -96,10 +99,12 @@ func TestLoadAndSave(t *testing.T) {
 	if !reflect.DeepEqual(networkOne, networkTwo) {
 		t.Error("Error: network was not loaded correctly.")
 	}
+
 }
 
 // TestUpdate - функция обеспечивает тестирование добавление записи в нейронную сеть во время работы
 func TestUpdate(t *testing.T) {
+
 	// установка случайности в нулевое значение
 	rand.Seed(0)
 
@@ -111,7 +116,7 @@ func TestUpdate(t *testing.T) {
 		{{1, 1}, {0}},
 	}
 
-	// создание первого экземпляра передачи
+	// создание экземпляра нейронной сети
 	network := NeuralNetwork{}
 
 	// инициализация нейронной сети, структура сети будет содержать 2 входа, 2 скрытых узла и 1 выход
@@ -146,4 +151,5 @@ func TestUpdate(t *testing.T) {
 	if reflect.DeepEqual(dumpOne, dumpTwo) {
 		t.Error("Error: the network does not learn while working.")
 	}
+
 }
