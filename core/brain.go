@@ -2,9 +2,7 @@ package core
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
-	"os"
 
 	"./brain"
 )
@@ -21,8 +19,12 @@ func Initialize(events chan<- string) *brain.NeuralNetwork {
 	network := brain.NeuralNetwork{}
 
 	// проверка существования файла снимка нейронной сети
-	_, error := os.Stat(SnapshotFile)
-	if error != nil {
+	if CheckExistenceFile(SnapshotFile, false) {
+
+		// загрузка снимка в нейронную сеть
+		network.Load(ReadFromFile(SnapshotFile, true))
+
+	} else {
 
 		events <- "begin_train"
 
@@ -33,24 +35,6 @@ func Initialize(events chan<- string) *brain.NeuralNetwork {
 		Сompletion(&network)
 
 		events <- "end_train"
-
-	} else {
-
-		// открытие файла для считывания снимка нейронной сети
-		file, error := os.OpenFile(SnapshotFile, os.O_CREATE|os.O_RDONLY, 0777)
-		if error != nil {
-			log.Fatal("Error: it is not possible to open a file to read a snapshot of the neural network.")
-		} else {
-			defer file.Close()
-		}
-
-		snapshot, error := ioutil.ReadFile(SnapshotFile)
-		if error != nil {
-			log.Fatal("Error: it is impossible to read the neural network snapshot file.")
-		}
-
-		// загрузка снимка в нейронную сеть
-		network.Load(snapshot)
 
 	}
 
@@ -63,47 +47,12 @@ func Initialize(events chan<- string) *brain.NeuralNetwork {
 // Сompletion - функция предназначенная для завершения сеанса нейронной сети
 func Сompletion(network *brain.NeuralNetwork) {
 
-	// проверка наличия файла снимка нейронной сети
-	_, error := os.Stat(SnapshotFile)
-	if error == nil {
-
-		// удаление старого снимка нейронной сети
-		error := os.Remove(SnapshotFile)
-		if error != nil {
-			log.Fatal("Error: you can not delete a file for overwriting neural network snapshots.")
-		}
-
-	} else {
-
-		// создание файла для сохранения снимка нейронной сети
-		file, error := os.Create(SnapshotFile)
-		if error != nil {
-			log.Fatal("Error: it is impossible to create a file for overwriting neural network snapshots.")
-		}
-
-		// закрытие файла
-		file.Close()
-
-	}
-
-	// создание файла для сохранения снимка нейронной сети
-	file, error := os.OpenFile(SnapshotFile, os.O_CREATE|os.O_WRONLY, 0777)
-	if error != nil {
-		log.Fatal("Error: it is not possible to open a file to save a snapshot of the neural network.")
-	} else {
-		defer file.Close()
-	}
-
 	// сохранение снимка нейронной сети
 	snapshot, error := network.Save()
 	if error != nil {
 		log.Fatal("Error: it is impossible to take a snapshot of the neural network for saving.")
-	}
-
-	// запись снимка нейронной сети в файл
-	_, error = file.Write(snapshot)
-	if error != nil {
-		log.Fatal("Error: it is not possible to write to a file to save a snapshot of the neural network.")
+	} else {
+		WriteToFile(SnapshotFile, snapshot, true, true)
 	}
 
 }
