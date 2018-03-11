@@ -97,7 +97,7 @@ func TestLoadAndSave(t *testing.T) {
 
 	// проверка на различия в сетях
 	if !reflect.DeepEqual(networkOne, networkTwo) {
-		t.Error("Error: network was not loaded correctly.")
+		t.Error("Ошибка: нейронная сеть не смогла загрузиться корректно.")
 	}
 
 }
@@ -151,7 +151,7 @@ func TestTrain(t *testing.T) {
 
 	// проверка на различия в сетях
 	if reflect.DeepEqual(dumpOne, dumpTwo) {
-		t.Error("Error: the network does not learn while working.")
+		t.Error("Ошибка: нейронная сеть не обучается.")
 	}
 
 }

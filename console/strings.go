@@ -20,7 +20,7 @@ func LaunchingDialog(network *brain.NeuralNetwork, events chan<- string) {
 	for {
 
 		// запрос ввода строки
-		fmt.Print("YOU: ")
+		fmt.Print("ВЫ      ->: ")
 
 		// считывание строки
 		question, error := reader.ReadString('\n')
@@ -28,7 +28,7 @@ func LaunchingDialog(network *brain.NeuralNetwork, events chan<- string) {
 			log.Fatal(error)
 		}
 
-		fmt.Print("BOT: ")
+		fmt.Print("nextBOT ->: ")
 		fmt.Println(core.Input(question, network, events))
 
 		// задержка
