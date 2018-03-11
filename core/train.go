@@ -56,7 +56,7 @@ func CreateDictionary() {
 		// создание файла для хранения начальных диалогов
 		file, error := os.Create(InitialDialogsFile)
 		if error != nil {
-			log.Fatal("Ошибка: невозможно создать файл для сохранения дилогов.")
+			log.Fatal("Error: can not create file to store dialogs.")
 		}
 
 		// закрытие файла
@@ -71,7 +71,7 @@ func CreateDictionary() {
 		// удаление старого файла для хранения диалогов
 		error := os.Remove(DictionaryFile)
 		if error != nil {
-			log.Fatal("Ошибка: невозможно удалить файл словаря.")
+			log.Fatal("Error: unable to delete the dictionary storage file.")
 		}
 
 	}
@@ -79,12 +79,12 @@ func CreateDictionary() {
 	// создание файла для хранения диалогов
 	file, error := os.Create(DictionaryFile)
 	if error != nil {
-		log.Fatal("Ошибка: невозможно создать файл словаря.")
+		log.Fatal("Error: unable to create a file to store the dictionary.")
 	}
 
 	dictionaryByte, error := ioutil.ReadFile(InitialDialogsFile)
 	if error != nil {
-		log.Fatal("Ошибка: невозможно прочититать файл с начальными диалогами.")
+		log.Fatal("Error: it is impossible to read the file with the initial dialogs.")
 	}
 
 	// закрытие файла
@@ -132,7 +132,7 @@ func CreateDictionary() {
 	// открытие файла для сохранения словаря
 	file, error = os.OpenFile(DictionaryFile, os.O_CREATE|os.O_WRONLY, 0777)
 	if error != nil {
-		log.Fatal("Ошибка: невозможно открыть файл словаря.")
+		log.Fatal("Error: can not open file with dictionary.")
 	} else {
 		defer file.Close()
 	}
@@ -149,7 +149,7 @@ func CreateDictionary() {
 	// запись словаря в файл
 	_, error = file.WriteString(dictionaryText)
 	if error != nil {
-		log.Fatal("Ошибка: невозможно произвести запись в файл словаря.")
+		log.Fatal("Error: it is impossible to write a file with a dictionary.")
 	}
 
 }

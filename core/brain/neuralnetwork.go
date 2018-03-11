@@ -116,7 +116,7 @@ Update - функция используется для активации не�
 func (nn *NeuralNetwork) Update(inputs []float64) []float64 {
 
 	if len(inputs) != nn.NInputs-1 {
-		log.Fatal("Ошибка: неверное количество входов в нейронной сети.")
+		log.Fatal("Error: wrong number of inputs.")
 	}
 
 	for i := 0; i < nn.NInputs-1; i++ {
@@ -165,7 +165,7 @@ func (nn *NeuralNetwork) Update(inputs []float64) []float64 {
 func (nn *NeuralNetwork) BackPropagate(targets []float64, lRate, mFactor float64) float64 {
 
 	if len(targets) != nn.NOutputs {
-		log.Fatal("Ошибка: неверное значение целевых значений.")
+		log.Fatal("Error: wrong number of target values.")
 	}
 
 	outputDeltas := vector(nn.NOutputs, 0.0)
