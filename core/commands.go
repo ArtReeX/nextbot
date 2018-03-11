@@ -5,7 +5,7 @@ func Commands(question string) int {
 
 	switch FilterTheQuestion(question) {
 
-	case "!BYE":
+	case "!bye":
 		return 0
 	default:
 		return -1

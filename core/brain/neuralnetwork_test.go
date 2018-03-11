@@ -81,7 +81,7 @@ func TestLoadAndSave(t *testing.T) {
 	networkOne.Train(patterns, 1000, 0.6, 0.4, false)
 
 	// получение снимка нейронной сети
-	dump, error := networkOne.Save()
+	snapshot, error := networkOne.Save()
 	if error != nil {
 		t.Error(error)
 	}
@@ -90,7 +90,7 @@ func TestLoadAndSave(t *testing.T) {
 	networkTwo := NeuralNetwork{}
 
 	// загрузка снимка в нейронную сеть
-	error = networkTwo.Load(dump)
+	error = networkTwo.Load(snapshot)
 	if error != nil {
 		t.Error(error)
 	}
