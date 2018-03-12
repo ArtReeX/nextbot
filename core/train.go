@@ -101,7 +101,7 @@ func CreateDictionary() {
 	for _, element := range dialogsSentences {
 
 		for _, element := range strings.Split(ClearText(element), " ") {
-			dictionaryMap[ClearText(element)] = float64(rand.Int63())
+			dictionaryMap[ClearText(element)] = rand.Float64()
 		}
 
 	}
