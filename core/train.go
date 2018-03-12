@@ -39,7 +39,7 @@ func FirstTrain(network *brain.NeuralNetwork) {
 	// кодирование диалогов
 	EncodeDialogs()
 
-	// создание шеблона нейронной сети
+	// создание шаблона нейронной сети
 	CreatePatternsForTrain(NInputs, NOutputs)
 
 	// обучение сети

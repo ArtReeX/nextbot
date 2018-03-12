@@ -39,8 +39,7 @@ func ExampleNeuralNetwork() {
 	network.Test(patterns)
 
 	// ручное тестирование
-	inputs := []float64{1, 1}
-	fmt.Println(network.Update(inputs))
+	fmt.Println(network.Update([]float64{1, 1}))
 
 	// Output:
 	// [0 0] -> [0.057503945708445206]  :  [0]
