@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"sync"
 	"time"
 
@@ -34,11 +33,7 @@ func main() {
 	go LaunchingEventsScanner(events, syncGroup)
 
 	// инициализация нейронной сети
-	network := core.Initialize(events)
-
-	// загрузка словаря
-	var dictionary map[string]float64
-	json.Unmarshal(core.ReadFromFile(DictionaryFile, false), &dictionary)
+	network, dictionary := core.Initialize(events)
 
 	// запуск потока диалога
 	go console.LaunchingDialog(network, dictionary, events)

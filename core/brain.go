@@ -13,7 +13,7 @@ const (
 )
 
 // Initialize - функция производящая инициализацию нейронной сети
-func Initialize(events chan<- string) *brain.NeuralNetwork {
+func Initialize(events chan<- string) (*brain.NeuralNetwork, map[string]float64) {
 
 	// создание экземпляра нейронной сети
 	network := brain.NeuralNetwork{}
@@ -38,7 +38,11 @@ func Initialize(events chan<- string) *brain.NeuralNetwork {
 
 	}
 
-	return &network
+	// загрузка словаря
+	var dictionary map[string]float64
+	Decode(ReadFromFile(DictionaryFile, false), &dictionary)
+
+	return &network, dictionary
 
 }
 
