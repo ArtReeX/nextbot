@@ -43,7 +43,7 @@ func FirstTrain(network *brain.NeuralNetwork) {
 	CreatePatternsForTrain(NInputs, NOutputs)
 
 	// обучение сети
-	network.Train(CreatePatternsForTrain(NInputs, NOutputs), 1000, 0.6, 0.4, false)
+	network.Train(CreatePatternsForTrain(NInputs, NOutputs), 500, 0.6, 0.4, false)
 
 }
 
@@ -100,8 +100,8 @@ func CreateDictionary() {
 	// разделение предложений на слова
 	for _, element := range dialogsSentences {
 
-		for _, element := range strings.Split(FilterText(element), " ") {
-			dictionaryMap[FilterText(element)] = float64(rand.Int63())
+		for _, element := range strings.Split(ClearText(element), " ") {
+			dictionaryMap[ClearText(element)] = float64(rand.Int63())
 		}
 
 	}
@@ -130,10 +130,10 @@ func EncodeDialogs() {
 	// разделение предложений на слова
 	for indexFirstLayer, element := range dialogsSentences {
 
-		sentenses := make([]float64, len(strings.Split(FilterText(element), " ")))
+		sentenses := make([]float64, len(strings.Split(ClearText(element), " ")))
 
-		for indexSecondLayer, element := range strings.Split(FilterText(element), " ") {
-			sentenses[indexSecondLayer] = initialDialogs[FilterText(element)]
+		for indexSecondLayer, element := range strings.Split(ClearText(element), " ") {
+			sentenses[indexSecondLayer] = initialDialogs[ClearText(element)]
 		}
 
 		encodedDialogs[indexFirstLayer] = sentenses
