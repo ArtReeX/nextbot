@@ -1,13 +1,14 @@
 package core
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"os"
 	"regexp"
 )
 
-// FilterText - функция, предназначенная для очистки входящего запроса от лишних символов
+// FilterText - функция, предназначенная для очистки текста от лишних символов
 func FilterText(str string) string {
 
 	reg, error := regexp.Compile("[^ a-z A-Z а-я А-Я 0-9 , ! ? .]")
@@ -17,21 +18,6 @@ func FilterText(str string) string {
 
 	return reg.ReplaceAllString(str, "")
 
-}
-
-// StringArrayToUnique - функция делает матрицу уникальной
-func StringArrayToUnique(input []string) []string {
-	u := make([]string, 0, len(input))
-	m := make(map[string]bool)
-
-	for _, val := range input {
-		if _, ok := m[val]; !ok {
-			m[val] = true
-			u = append(u, val)
-		}
-	}
-
-	return u
 }
 
 // ReadFromFile - функция для загрузки с файла
@@ -112,5 +98,26 @@ func CheckExistenceFile(path string, autoCreate bool) bool {
 	}
 
 	return true
+
+}
+
+// Encode - функция преобразования объектов в JSON формат
+func Encode(object interface{}) []byte {
+
+	objectInJSON, error := json.Marshal(object)
+	if error != nil {
+		log.Fatal("Error: it is not possible to convert an object into a JSON format. " + error.Error())
+	}
+
+	return objectInJSON
+}
+
+// Decode - функция преобразования объектов из JSON формата
+func Decode(object []byte, structure interface{}) {
+
+	error := json.Unmarshal(object, structure)
+	if error != nil {
+		log.Fatal("Error: could not convert object from JSON format. " + error.Error())
+	}
 
 }

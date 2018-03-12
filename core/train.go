@@ -1,13 +1,9 @@
 package core
 
 import (
-	"io/ioutil"
-	"log"
 	"math/rand"
-	"os"
-	"sort"
-	"strconv"
 	"strings"
+	"time"
 
 	"./brain"
 )
@@ -15,8 +11,8 @@ import (
 const (
 	// InitialDialogsFile - файл с начальными диалогами
 	InitialDialogsFile = "./train/initial.dialogs"
-	// ConversedDialogsFile - файл с конечными диалогами
-	ConversedDialogsFile = "./train/conversed.dialogs"
+	// EncodedDialogsFile - файл с закодированными диалогами
+	EncodedDialogsFile = "./train/encoded.dialogs"
 	// DictionaryFile - файл со словарём
 	DictionaryFile = "dictionary.store"
 )
@@ -26,6 +22,9 @@ func FirstTrain(network *brain.NeuralNetwork) {
 
 	// создание словаря для нейронной сети
 	CreateDictionary()
+
+	// кодирование диалогов
+	EncodeDialogs()
 
 	// установка случайности в нулевое значение
 	rand.Seed(0)
@@ -49,107 +48,62 @@ func FirstTrain(network *brain.NeuralNetwork) {
 // CreateDictionary - функция используется для создания словаря из существующих диалогов
 func CreateDictionary() {
 
-	// проверка существования файла начальных диалогов
-	_, error := os.Stat(InitialDialogsFile)
-	if error != nil {
+	// считывание начальных диалогов
+	dialogsByte := ReadFromFile(InitialDialogsFile, true)
 
-		// создание файла для хранения начальных диалогов
-		file, error := os.Create(InitialDialogsFile)
-		if error != nil {
-			log.Fatal("Error: can not create file to store dialogs.")
-		}
+	// подготовка местя для хранения словаря
+	dictionaryMap := make(map[string]int)
 
-		// закрытие файла
-		file.Close()
-
-	}
-
-	// проверка существования файла словаря
-	_, error = os.Stat(DictionaryFile)
-	if error == nil {
-
-		// удаление старого файла для хранения диалогов
-		error := os.Remove(DictionaryFile)
-		if error != nil {
-			log.Fatal("Error: unable to delete the dictionary storage file.")
-		}
-
-	}
-
-	// создание файла для хранения диалогов
-	file, error := os.Create(DictionaryFile)
-	if error != nil {
-		log.Fatal("Error: unable to create a file to store the dictionary.")
-	}
-
-	dictionaryByte, error := ioutil.ReadFile(InitialDialogsFile)
-	if error != nil {
-		log.Fatal("Error: it is impossible to read the file with the initial dialogs.")
-	}
-
-	// закрытие файла
-	file.Close()
+	// инициализация случайных чисел
+	rand.Seed(time.Now().UnixNano())
 
 	// разделение текста по предложениям
-	dictionarySentences := strings.Split(string(dictionaryByte), "\r\n")
-
-	// подготовка матрицы для хранения слов
-	dictionaryMatrix := make([][]string, len(dictionarySentences))
-
-	// суммарный размер матрицы
-	summaryMatrixSize := 0
+	dialogsSentences := strings.Split(string(dialogsByte), "\r\n")
 
 	// разделение предложений на слова
-	for index, element := range dictionarySentences {
+	for _, element := range dialogsSentences {
 
-		dictionaryMatrix[index] = strings.Split(FilterText(element), " ")
-		summaryMatrixSize += len(dictionaryMatrix[index])
-
-	}
-
-	// создание массива со словами
-	dictionaryArray := make([]string, summaryMatrixSize)
-	dictionaryArrayCount := 0
-
-	// заполнение массива словами
-	for indexFirstLayer := range dictionaryMatrix {
-
-		for indexSecondLayer := range dictionaryMatrix[indexFirstLayer] {
-
-			dictionaryArray[dictionaryArrayCount] = dictionaryMatrix[indexFirstLayer][indexSecondLayer]
-			dictionaryArrayCount++
-
+		for _, element := range strings.Split(FilterText(element), " ") {
+			dictionaryMap[FilterText(element)] = rand.Int()
 		}
-
-	}
-
-	// создание уникального массива
-	dictionaryArray = StringArrayToUnique(dictionaryArray)
-
-	// сортировка словаря
-	sort.Strings(dictionaryArray)
-
-	// открытие файла для сохранения словаря
-	file, error = os.OpenFile(DictionaryFile, os.O_CREATE|os.O_WRONLY, 0777)
-	if error != nil {
-		log.Fatal("Error: can not open file with dictionary.")
-	} else {
-		defer file.Close()
-	}
-
-	// преобразование словаря в строку для записи
-	dictionaryText := ""
-
-	for index, element := range dictionaryArray {
-
-		dictionaryText += "[" + strconv.Itoa(index) + "]" + element + "\r\n"
 
 	}
 
 	// запись словаря в файл
-	_, error = file.WriteString(dictionaryText)
-	if error != nil {
-		log.Fatal("Error: it is impossible to write a file with a dictionary.")
+	WriteToFile(DictionaryFile, Encode(dictionaryMap), true, true)
+
+}
+
+// EncodeDialogs - функция используется для кодирования диалогов
+func EncodeDialogs() {
+
+	// считывание словаря из файла
+	var initialDialogs map[string]int
+	Decode(ReadFromFile(DictionaryFile, true), &initialDialogs)
+
+	// считывание начальных диалогов
+	dialogsByte := ReadFromFile(InitialDialogsFile, true)
+
+	// разделение текста по предложениям
+	dialogsSentences := strings.Split(string(dialogsByte), "\r\n")
+
+	// создание матрицы для хранения диалогов
+	encodedDialogs := make([][]int, len(dialogsSentences))
+
+	// разделение предложений на слова
+	for indexFirstLayer, element := range dialogsSentences {
+
+		sentenses := make([]int, len(strings.Split(FilterText(element), " ")))
+
+		for indexSecondLayer, element := range strings.Split(FilterText(element), " ") {
+			sentenses[indexSecondLayer] = initialDialogs[FilterText(element)]
+		}
+
+		encodedDialogs[indexFirstLayer] = sentenses
+
 	}
+
+	// запись кодированного диалога в файл
+	WriteToFile(EncodedDialogsFile, Encode(encodedDialogs), true, true)
 
 }
