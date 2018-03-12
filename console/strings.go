@@ -12,7 +12,7 @@ import (
 )
 
 // LaunchingDialog - функция для выполнения последовательности диалога
-func LaunchingDialog(network *brain.NeuralNetwork, events chan<- string) {
+func LaunchingDialog(network *brain.NeuralNetwork, dictionary map[string]float64, events chan<- string) {
 
 	// определение считывателя
 	reader := bufio.NewReader(os.Stdin)
@@ -29,7 +29,7 @@ func LaunchingDialog(network *brain.NeuralNetwork, events chan<- string) {
 		}
 
 		fmt.Print("BOT: ")
-		fmt.Println(core.Input(question, network, events))
+		fmt.Println(core.Input(question, network, dictionary, events))
 
 		// задержка
 		time.Sleep(time.Second * 2)

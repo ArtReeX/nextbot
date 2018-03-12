@@ -5,13 +5,13 @@ import (
 )
 
 // Input - функция, предназначенная для запроса боту
-func Input(question string, brainBot *brain.NeuralNetwork, events chan<- string) string {
+func Input(question string, network *brain.NeuralNetwork, dictionary map[string]float64, events chan<- string) string {
 
 	question = FilterText(question)
 
 	// передача строки в функцию проверки комманд
 	Commands(question, events)
 
-	return question
+	return Activate(question, network, dictionary)
 
 }

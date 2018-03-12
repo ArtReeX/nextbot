@@ -15,10 +15,23 @@ const (
 	EncodedDialogsFile = "./train/encoded.dialogs"
 	// DictionaryFile - файл со словарём
 	DictionaryFile = "dictionary.store"
+
+	// NInputs - количество входящих нейронов
+	NInputs = 50
+	// NHiddens - количество скрытых нейронов
+	NHiddens = 50
+	// NOutputs - количество исходящих нейронов
+	NOutputs = 50
 )
 
 // FirstTrain - функция для первоначального обучения нейронной сети
 func FirstTrain(network *brain.NeuralNetwork) {
+
+	// установка случайности в нулевое значение
+	rand.Seed(0)
+
+	// инициализация нейронной сети, структура сети будет содержать 2 входа, 2 скрытых узла и 1 выход
+	network.Initialize(NInputs, NHiddens, NOutputs)
 
 	// создание словаря для нейронной сети
 	CreateDictionary()
@@ -26,22 +39,46 @@ func FirstTrain(network *brain.NeuralNetwork) {
 	// кодирование диалогов
 	EncodeDialogs()
 
-	// установка случайности в нулевое значение
-	rand.Seed(0)
-
-	// создание шаблона обучения сети
-	patterns := [][][]float64{
-		{{0, 0}, {0}},
-		{{0, 1}, {1}},
-		{{1, 0}, {1}},
-		{{1, 1}, {0}},
-	}
-
-	// инициализация нейронной сети, структура сети будет содержать 2 входа, 2 скрытых узла и 1 выход
-	network.Initialize(2, 2, 1)
+	// создание шеблона нейронной сети
+	CreatePatternsForTrain(NInputs, NOutputs)
 
 	// обучение сети
-	network.Train(patterns, 1000, 0.6, 0.4, false)
+	network.Train(CreatePatternsForTrain(NInputs, NOutputs), 1000, 0.6, 0.4, false)
+
+}
+
+// CreatePatternsForTrain - функция используется для создания шаблона обучения
+func CreatePatternsForTrain(inputs, outputs uint) [][][]float64 {
+
+	// считывание закодированых диалогов из файла
+	var dialogs [][]float64
+	Decode(ReadFromFile(EncodedDialogsFile, false), &dialogs)
+
+	patterns := make([][][]float64, len(dialogs)/2)
+	indexDialogs := 0
+
+	// создание шаблона с промежуточными нулями
+	for indexPatterns := 0; indexPatterns < len(patterns); indexPatterns++ {
+
+		patterns[indexPatterns] = make([][]float64, 2)
+
+		patterns[indexPatterns][0] = make([]float64, inputs)
+		for index, element := range dialogs[indexDialogs] {
+			patterns[indexPatterns][0][index] = element
+		}
+
+		indexDialogs++
+
+		patterns[indexPatterns][1] = make([]float64, outputs)
+		for index, element := range dialogs[indexDialogs] {
+			patterns[indexPatterns][1][index] = element
+		}
+
+		indexDialogs++
+
+	}
+
+	return patterns
 
 }
 
@@ -52,7 +89,7 @@ func CreateDictionary() {
 	dialogsByte := ReadFromFile(InitialDialogsFile, true)
 
 	// подготовка местя для хранения словаря
-	dictionaryMap := make(map[string]int)
+	dictionaryMap := make(map[string]float64)
 
 	// инициализация случайных чисел
 	rand.Seed(time.Now().UnixNano())
@@ -64,7 +101,7 @@ func CreateDictionary() {
 	for _, element := range dialogsSentences {
 
 		for _, element := range strings.Split(FilterText(element), " ") {
-			dictionaryMap[FilterText(element)] = rand.Int()
+			dictionaryMap[FilterText(element)] = rand.Float64()
 		}
 
 	}
@@ -78,7 +115,7 @@ func CreateDictionary() {
 func EncodeDialogs() {
 
 	// считывание словаря из файла
-	var initialDialogs map[string]int
+	var initialDialogs map[string]float64
 	Decode(ReadFromFile(DictionaryFile, true), &initialDialogs)
 
 	// считывание начальных диалогов
@@ -88,12 +125,12 @@ func EncodeDialogs() {
 	dialogsSentences := strings.Split(string(dialogsByte), "\r\n")
 
 	// создание матрицы для хранения диалогов
-	encodedDialogs := make([][]int, len(dialogsSentences))
+	encodedDialogs := make([][]float64, len(dialogsSentences))
 
 	// разделение предложений на слова
 	for indexFirstLayer, element := range dialogsSentences {
 
-		sentenses := make([]int, len(strings.Split(FilterText(element), " ")))
+		sentenses := make([]float64, len(strings.Split(FilterText(element), " ")))
 
 		for indexSecondLayer, element := range strings.Split(FilterText(element), " ") {
 			sentenses[indexSecondLayer] = initialDialogs[FilterText(element)]

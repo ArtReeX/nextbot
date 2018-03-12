@@ -1,11 +1,17 @@
 package main
 
 import (
+	"encoding/json"
 	"sync"
 	"time"
 
 	"./console"
 	"./core"
+)
+
+const (
+	// DictionaryFile - файл со словарём
+	DictionaryFile = "dictionary.store"
 )
 
 // main - функция, являющейся основной
@@ -30,8 +36,12 @@ func main() {
 	// инициализация нейронной сети
 	network := core.Initialize(events)
 
+	// загрузка словаря
+	var dictionary map[string]float64
+	json.Unmarshal(core.ReadFromFile(DictionaryFile, false), &dictionary)
+
 	// запуск потока диалога
-	go console.LaunchingDialog(network, events)
+	go console.LaunchingDialog(network, dictionary, events)
 
 	// перевод в режим ожидания окончания всех потоков
 	syncGroup.Wait()
