@@ -142,7 +142,7 @@ func StringToCodeArray(str string, dictionary map[string]float64, nInputs uint) 
 }
 
 // CodeArrayToString - функция преобразования массива кодов для нейронной сети в строку
-func CodeArrayToString(answerCode []float64, dictionary map[string]float64, nOutputs uint) string {
+func CodeArrayToString(answerCode []float64, dictionary map[string]float64) string {
 
 	// строка для ответа
 	answerString := ""

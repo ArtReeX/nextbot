@@ -49,7 +49,7 @@ func Initialize(events chan<- string) (*brain.NeuralNetwork, map[string]float64)
 func Activate(str string, network *brain.NeuralNetwork, dictionary map[string]float64) string {
 
 	// получение ответа от нейронной сети
-	return CodeArrayToString(network.Update(StringToCodeArray(str, dictionary, NInputs)), dictionary, NOutputs)
+	return CodeArrayToString(network.Update(StringToCodeArray(str, dictionary, NInputs)), dictionary)
 
 }
 
