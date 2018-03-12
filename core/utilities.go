@@ -153,7 +153,11 @@ func StringToCodeArray(inputString string, dictionary map[string]float64, nInput
 
 	// кодирование слов
 	for index, element := range inputArray {
-		arrayCodes[index] = dictionary[element]
+		if uint(index) < nInputs {
+			arrayCodes[index] = dictionary[element]
+		} else {
+			break
+		}
 	}
 
 	return arrayCodes

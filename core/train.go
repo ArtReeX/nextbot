@@ -54,24 +54,34 @@ func CreatePatternsForTrain(nInputs, nOutputs uint) [][][]float64 {
 	var dialogs [][]float64
 	Decode(ReadFromFile(EncodedDialogsFile, false), &dialogs)
 
-	patterns := make([][][]float64, len(dialogs)/2)
 	indexDialogs := 0
 
-	// создание шаблона с промежуточными нулями
-	for indexPatterns := 0; indexPatterns < len(patterns); indexPatterns++ {
+	patterns := make([][][]float64, len(dialogs)/2)
 
+	// создание шаблона с промежуточными нулями
+	for indexPatterns := range patterns {
+
+		// создание места под диалог и ответ
 		patterns[indexPatterns] = make([][]float64, 2)
 
 		patterns[indexPatterns][0] = make([]float64, nInputs)
-		for index, element := range dialogs[indexDialogs] {
-			patterns[indexPatterns][0][index] = element
+		for index, word := range dialogs[indexDialogs] {
+			if uint(index) < nInputs {
+				patterns[indexPatterns][0][index] = word
+			} else {
+				break
+			}
 		}
 
 		indexDialogs++
 
 		patterns[indexPatterns][1] = make([]float64, nOutputs)
-		for index, element := range dialogs[indexDialogs] {
-			patterns[indexPatterns][1][index] = element
+		for index, word := range dialogs[indexDialogs] {
+			if uint(index) < nOutputs {
+				patterns[indexPatterns][1][index] = word
+			} else {
+				break
+			}
 		}
 
 		indexDialogs++
@@ -98,10 +108,10 @@ func CreateDictionary() {
 	dialogsSentences := strings.Split(string(dialogsByte), "\r\n")
 
 	// разделение предложений на слова
-	for _, element := range dialogsSentences {
+	for _, word := range dialogsSentences {
 
-		for _, element := range strings.Split(ClearText(element), " ") {
-			dictionaryMap[ClearText(element)] = rand.Float64()
+		for _, word := range strings.Split(ClearText(word), " ") {
+			dictionaryMap[ClearText(word)] = rand.Float64()
 		}
 
 	}
@@ -128,12 +138,12 @@ func EncodeDialogs() {
 	encodedDialogs := make([][]float64, len(dialogsSentences))
 
 	// разделение предложений на слова
-	for indexFirstLayer, element := range dialogsSentences {
+	for indexFirstLayer, word := range dialogsSentences {
 
-		sentenses := make([]float64, len(strings.Split(ClearText(element), " ")))
+		sentenses := make([]float64, len(strings.Split(ClearText(word), " ")))
 
-		for indexSecondLayer, element := range strings.Split(ClearText(element), " ") {
-			sentenses[indexSecondLayer] = initialDialogs[ClearText(element)]
+		for indexSecondLayer, word := range strings.Split(ClearText(word), " ") {
+			sentenses[indexSecondLayer] = initialDialogs[ClearText(word)]
 		}
 
 		encodedDialogs[indexFirstLayer] = sentenses
