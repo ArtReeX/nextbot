@@ -48,7 +48,7 @@ func FirstTrain(network *brain.NeuralNetwork) {
 }
 
 // CreatePatternsForTrain - функция используется для создания шаблона обучения
-func CreatePatternsForTrain(inputs, outputs uint) [][][]float64 {
+func CreatePatternsForTrain(nInputs, nOutputs uint) [][][]float64 {
 
 	// считывание закодированых диалогов из файла
 	var dialogs [][]float64
@@ -62,14 +62,14 @@ func CreatePatternsForTrain(inputs, outputs uint) [][][]float64 {
 
 		patterns[indexPatterns] = make([][]float64, 2)
 
-		patterns[indexPatterns][0] = make([]float64, inputs)
+		patterns[indexPatterns][0] = make([]float64, nInputs)
 		for index, element := range dialogs[indexDialogs] {
 			patterns[indexPatterns][0][index] = element
 		}
 
 		indexDialogs++
 
-		patterns[indexPatterns][1] = make([]float64, outputs)
+		patterns[indexPatterns][1] = make([]float64, nOutputs)
 		for index, element := range dialogs[indexDialogs] {
 			patterns[indexPatterns][1][index] = element
 		}

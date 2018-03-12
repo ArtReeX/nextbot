@@ -2,7 +2,6 @@ package core
 
 import (
 	"log"
-	"strings"
 
 	"./brain"
 )
@@ -49,37 +48,8 @@ func Initialize(events chan<- string) (*brain.NeuralNetwork, map[string]float64)
 // Activate - функция производящая вычисления в нейронной сети
 func Activate(str string, network *brain.NeuralNetwork, dictionary map[string]float64) string {
 
-	// разбор входящей строки по словам
-	inputString := strings.Split(str, "")
-
-	// создание массива с входящим предложением
-	inputArray := make([]float64, NInputs)
-
-	// кодирование слов
-	for index, element := range inputString {
-		inputArray[index] = dictionary[FilterText(element)]
-	}
-
 	// получение ответа от нейронной сети
-	answerCode := network.Update(inputArray)
-
-	// строка для ответа
-	answerString := ""
-
-	// преобразование закодированного ответа в слова
-	for _, element := range answerCode {
-
-		for index := range dictionary {
-
-			if dictionary[index] == element {
-				answerString += index + " "
-			}
-
-		}
-
-	}
-
-	return answerString
+	return CodeArrayToString(network.Update(StringToCodeArray(str, dictionary, NInputs)), dictionary, NOutputs)
 
 }
 

@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"strings"
 )
 
 // FilterText - функция, предназначенная для очистки текста от лишних символов
@@ -119,5 +120,46 @@ func Decode(object []byte, structure interface{}) {
 	if error != nil {
 		log.Fatal("Error: could not convert object from JSON format. " + error.Error())
 	}
+
+}
+
+// StringToCodeArray - функция преобразования строки в массив кодов для нейронной сети
+func StringToCodeArray(str string, dictionary map[string]float64, nInputs uint) []float64 {
+
+	// разбор входящей строки по словам
+	inputString := strings.Split(str, "")
+
+	// создание массива с входящим предложением
+	inputArray := make([]float64, NInputs)
+
+	// кодирование слов
+	for index, element := range inputString {
+		inputArray[index] = dictionary[FilterText(element)]
+	}
+
+	return inputArray
+
+}
+
+// CodeArrayToString - функция преобразования массива кодов для нейронной сети в строку
+func CodeArrayToString(answerCode []float64, dictionary map[string]float64, nOutputs uint) string {
+
+	// строка для ответа
+	answerString := ""
+
+	// преобразование закодированного ответа в слова
+	for _, element := range answerCode {
+
+		for index := range dictionary {
+
+			if dictionary[index] == element {
+				answerString += index + " "
+			}
+
+		}
+
+	}
+
+	return answerString
 
 }
